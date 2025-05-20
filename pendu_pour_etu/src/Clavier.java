@@ -26,7 +26,12 @@ public class Clavier extends TilePane{
      * @param tailleLigne nombre de touches par ligne
      */
     public Clavier(String touches, EventHandler<ActionEvent> actionTouches) {
-        // A implémenter
+        this.clavier = new ArrayList<>();
+        for(char lettre : touches.toCharArray()){
+            Button btnLettre = new Button(lettre + "");
+            btnLettre.setOnAction(actionTouches);
+            this.clavier.add(btnLettre);
+        }
     }
 
     /**
@@ -34,6 +39,12 @@ public class Clavier extends TilePane{
      * @param touchesDesactivees une chaine de caractères contenant la liste des touches désactivées
      */
     public void desactiveTouches(Set<String> touchesDesactivees){
-        // A implémenter
+        
+        for(Button btnLettre : this.clavier){
+            if(touchesDesactivees.contains(btnLettre.getText())){
+                btnLettre.setDisable(true);
+                btnLettre.setStyle("-fx-background-color : #878787");
+            }
+        }
     }
 }
