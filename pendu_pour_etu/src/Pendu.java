@@ -10,13 +10,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.control.Tooltip;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.Region;
 import javafx.scene.text.TextAlignment;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData ;
-import javafx.scene.control.ButtonType ;
+
 import java.util.List;
 import java.util.Arrays;
 import java.io.File;
@@ -27,6 +23,9 @@ import java.util.ArrayList;
  * Vue du jeu du pendu
  */
 public class Pendu extends Application {
+
+    private Stage stage;
+
     /**
      * modèle du jeu
      **/
@@ -77,8 +76,10 @@ public class Pendu extends Application {
      * le bouton Accueil / Maison
      */    
     private Button boutonMaison;
+
+    private Button boutonInfo;
     /**
-     * le bouton qui permet de (lancer ou relancer une partie
+     * le bouton qui permet de (lancer ou relancer une partie)
      */ 
     private Button bJouer;
 
@@ -89,8 +90,36 @@ public class Pendu extends Application {
     public void init() {
         this.modelePendu = new MotMystere("/usr/share/dict/french", 3, 10, MotMystere.FACILE, 10);
         this.lesImages = new ArrayList<Image>();
-        this.chargerImages("./img");
-        // A terminer d'implementer
+        this.chargerImages("./pendu_pour_etu/img");
+        this.dessin = new ImageView(this.lesImages.get(0));
+        this.motCrypte = new Text(this.modelePendu.getMotCrypte());
+        this.clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ-", new ControleurLettres(this.modelePendu, this));
+        
+        this.leNiveau = new Text("Facile");
+        this.leNiveau.setStyle("-fx-font-size:20px");
+
+        //buttons
+
+        this.boutonMaison = new Button();
+        ImageView home = new ImageView(new Image("file:pendu_pour_etu/img/home.png"));
+        home.setFitHeight(32);
+        home.setFitWidth(32);
+        this.boutonMaison.setGraphic(home);
+
+        this.boutonParametres = new Button();
+        ImageView param = new ImageView(new Image("file:pendu_pour_etu/img/parametres.png"));
+        param.setFitHeight(32);
+        param.setFitWidth(32);
+        this.boutonParametres.setGraphic(param);
+
+        this.boutonInfo = new Button();
+        ImageView info = new ImageView(new Image("file:pendu_pour_etu/img/info.png"));
+        info.setFitHeight(32);
+        info.setFitWidth(32);
+        this.boutonInfo.setGraphic(info);
+
+        this.bJouer = new Button("Lancer une partie");
+        this.bJouer.setOnAction(new ControleurLancerPartie(modelePendu, this));
     }
 
     /**
@@ -100,6 +129,7 @@ public class Pendu extends Application {
         BorderPane fenetre = new BorderPane();
         fenetre.setTop(this.titre());
         fenetre.setCenter(this.panelCentral);
+        BorderPane.setMargin(this.panelCentral, new Insets(30));
         return new Scene(fenetre, 800, 1000);
     }
 
@@ -107,8 +137,27 @@ public class Pendu extends Application {
      * @return le panel contenant le titre du jeu
      */
     private Pane titre(){
-        // A implementer          
-        Pane banniere = new Pane();
+
+        BorderPane banniere = new BorderPane();
+
+        Text titreJeu = new Text("Jeu du Pendu");
+        titreJeu.setStyle("-fx-font-size:35 px;");
+        BorderPane.setMargin(titreJeu, new Insets(20));
+
+        HBox imgs = new HBox(10);
+
+        BorderPane.setAlignment(imgs,Pos.CENTER);
+        BorderPane.setAlignment(this.boutonMaison, Pos.CENTER);
+        BorderPane.setAlignment(this.boutonParametres, Pos.CENTER);
+        BorderPane.setAlignment(this.boutonInfo, Pos.CENTER);
+        BorderPane.setMargin(imgs, new Insets(10));
+
+        imgs.getChildren().addAll(this.boutonMaison, this.boutonParametres, this.boutonInfo);
+
+        banniere.setLeft(titreJeu);
+        banniere.setStyle("-fx-background-color: #c9ecff");
+        banniere.setRight(imgs);
+
         return banniere;
     }
 
@@ -121,24 +170,61 @@ public class Pendu extends Application {
         // return res;
     // }
 
-    // /**
-     // * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
-     // *         de progression et le clavier
-     // */
-    // private Pane fenetreJeu(){
-        // A implementer
-        // Pane res = new Pane();
-        // return res;
-    // }
+    /**
+    / * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
+    / *         de progression et le clavier
+    / */
+    private Pane fenetreJeu(){
+        
+        BorderPane center = new BorderPane();
 
-    // /**
-     // * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de jeu
-     // */
-    // private Pane fenetreAccueil(){
-        // A implementer    
-        // Pane res = new Pane();
-        // return res;
-    // }
+        VBox content = new VBox(10);
+        content.getChildren().add(this.dessin);
+        content.getChildren().add(this.clavier);
+        
+        center.setTop(this.motCrypte);
+        BorderPane.setAlignment(this.motCrypte, Pos.CENTER);
+        center.setCenter(content);
+        BorderPane.setAlignment(this.dessin, Pos.CENTER);
+
+        center.setRight(this.leNiveau);
+
+        return center;
+    }
+
+    /**
+    / * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de jeu
+    */
+    private Pane fenetreAccueil(){
+           
+        BorderPane paramJeu = new BorderPane();
+        VBox content = new VBox(10);
+
+        // radio btn de difficulté
+
+        ToggleGroup groupRadioDiff = new ToggleGroup();
+
+        RadioButton facile = new RadioButton("Facile");
+        RadioButton medium = new RadioButton("Médium");
+        RadioButton difficile = new RadioButton("Difficile");
+        RadioButton expert = new RadioButton("Expert");
+
+        facile.setToggleGroup(groupRadioDiff);
+        facile.setSelected(true);
+        medium.setToggleGroup(groupRadioDiff);
+        difficile.setToggleGroup(groupRadioDiff);
+        expert.setToggleGroup(groupRadioDiff);
+
+        VBox radio = new VBox(10);
+        radio.getChildren().addAll(facile,medium,difficile,expert);
+
+        TitledPane difficuly = new TitledPane("Niveau de difficulté",radio);
+
+        content.getChildren().addAll(this.bJouer,difficuly);
+        paramJeu.setCenter(content);
+
+        return paramJeu;
+    }
 
     /**
      * charge les images à afficher en fonction des erreurs
@@ -153,11 +239,13 @@ public class Pendu extends Application {
     }
 
     public void modeAccueil(){
-        // A implementer
+        this.panelCentral = (BorderPane) this.fenetreAccueil();
     }
     
     public void modeJeu(){
-        // A implementer
+        this.panelCentral = (BorderPane) this.fenetreJeu();
+        this.stage.setScene(this.laScene());
+
     }
     
     public void modeParametres(){
@@ -215,10 +303,11 @@ public class Pendu extends Application {
      */
     @Override
     public void start(Stage stage) {
-        stage.setTitle("IUTEAM'S - La plateforme de jeux de l'IUTO");
-        stage.setScene(this.laScene());
+        this.stage = stage;
+        this.stage.setTitle("IUTEAM'S - La plateforme de jeux de l'IUTO");
         this.modeAccueil();
-        stage.show();
+        this.stage.setScene(this.laScene());
+        this.stage.show();
     }
 
     /**

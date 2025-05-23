@@ -31,6 +31,7 @@ public class Clavier extends TilePane{
             Button btnLettre = new Button(lettre + "");
             btnLettre.setOnAction(actionTouches);
             this.clavier.add(btnLettre);
+            this.getChildren().add(btnLettre);
         }
     }
 
