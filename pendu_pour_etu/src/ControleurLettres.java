@@ -35,16 +35,17 @@ public class ControleurLettres implements EventHandler<ActionEvent> {
     public void handle(ActionEvent actionEvent) {
         
         Button btnSource = (Button) actionEvent.getSource();
+        btnSource.setDisable(true);
 
         this.modelePendu.essaiLettre(btnSource.getText().charAt(0));
 
         this.vuePendu.majAffichage();  
 
         if(this.modelePendu.gagne()){
-            this.vuePendu.popUpMessageGagne();
+            this.vuePendu.popUpMessageGagne().showAndWait();
         }
         if(this.modelePendu.perdu()){
-            this.vuePendu.popUpMessagePerdu();
+            this.vuePendu.popUpMessagePerdu().showAndWait();
         }
     }
 }

@@ -1,6 +1,9 @@
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
+
 import java.util.Optional;
 
 /**
@@ -16,13 +19,16 @@ public class ControleurLancerPartie implements EventHandler<ActionEvent> {
      **/
     private Pendu vuePendu;
 
+    private ToggleGroup radioNiveau;
+
     /**
      * @param modelePendu modèle du jeu
      * @param p vue du jeu
      */
-    public ControleurLancerPartie(MotMystere modelePendu, Pendu vuePendu) {
+    public ControleurLancerPartie(MotMystere modelePendu, Pendu vuePendu,ToggleGroup radioNiveau) {
         this.modelePendu = modelePendu;
         this.vuePendu = vuePendu;
+        this.radioNiveau = radioNiveau;
     }
 
     /**
@@ -36,7 +42,7 @@ public class ControleurLancerPartie implements EventHandler<ActionEvent> {
         Optional<ButtonType> reponse = this.vuePendu.popUpPartieEnCours().showAndWait(); // on lance la fenêtre popup et on attends la réponse
         // si la réponse est oui
         if (reponse.isPresent() && reponse.get().equals(ButtonType.YES)){
-            this.vuePendu.modeJeu();
+            this.vuePendu.lancePartie(((RadioButton)radioNiveau.getSelectedToggle()).getText());
         }
         else{
             System.out.println("D'ac !");
