@@ -24,18 +24,20 @@ public class Chronometre extends Text{
      */
     private ControleurChronometre actionTemps;
 
+    private int dureeSeconde;
+
     /**
      * Constructeur permettant de créer le chronomètre
      * avec un label initialisé à "0:0:0"
      * Ce constructeur créer la Timeline, la KeyFrame et le contrôleur
      */
     public Chronometre(){
-        super("0:0:0");
-        this.keyFrame = new KeyFrame(new Duration(100));
+        super("");
+        this.actionTemps = new ControleurChronometre(this);
+        this.keyFrame = new KeyFrame(new Duration(100),this.actionTemps);
         this.timeline = new Timeline(this.keyFrame);
-        this.actionTemps =  new ControleurChronometre(this);
-        this.timeline.setOnFinished(this.actionTemps);
-
+        this.timeline.setCycleCount(Timeline.INDEFINITE);
+        this.dureeSeconde = 120;
     }
 
     /**
@@ -45,14 +47,17 @@ public class Chronometre extends Text{
      */
     public void setTime(long tempsMillisec){
 
-        int minute = (int) tempsMillisec % 60000;
-        int secondes = (int) (tempsMillisec - (minute*60000))%1000;
+        long remainingTime = (this.dureeSeconde * 1000) - tempsMillisec;
 
-        if(minute < 1){
+        int minute = (int) remainingTime / (60 * 1000);
+        int secondes = (int) (remainingTime - (minute * 60000)) / 1000;
+
+        if (minute == 0) {
             this.setText(secondes + " S");
+        } else {
+            this.setText(minute + " min " + secondes + " S");
         }
-
-        this.setText(minute+" m :"+secondes + " S");
+  
     }
 
     /**
@@ -73,6 +78,16 @@ public class Chronometre extends Text{
      * Permet de remettre le chronomètre à 0
      */
     public void resetTime(){
-        this.setText("0 S");
+
+        if(this.dureeSeconde > 60){
+            int min = (int) dureeSeconde / 60;
+            int sec = this.dureeSeconde - min*60;
+            this.setText(min + " min " + sec + " S");
+        }
+        else{
+            this.setText(this.dureeSeconde + "S");
+        }
+
+        this.actionTemps.reset();
     }
 }

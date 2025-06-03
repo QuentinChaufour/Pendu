@@ -43,9 +43,11 @@ public class ControleurLettres implements EventHandler<ActionEvent> {
 
         if(this.modelePendu.gagne()){
             this.vuePendu.popUpMessageGagne().showAndWait();
+            this.vuePendu.modeAccueil();
         }
         if(this.modelePendu.perdu()){
             this.vuePendu.popUpMessagePerdu().showAndWait();
+            this.vuePendu.modeAccueil();
         }
     }
 }

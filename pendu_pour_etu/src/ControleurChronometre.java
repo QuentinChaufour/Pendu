@@ -27,7 +27,7 @@ public class ControleurChronometre implements EventHandler<ActionEvent> {
     public ControleurChronometre (Chronometre chrono){
         
         this.chrono = chrono;
-        this.tempsPrec = 0;
+        this.tempsPrec = -1;
         this.tempsEcoule = 0;
 
     }
@@ -41,15 +41,16 @@ public class ControleurChronometre implements EventHandler<ActionEvent> {
     @Override
     public void handle(ActionEvent actionEvent) {
 
-        if(this.tempsPrec != 0){
-            this.tempsEcoule += System.currentTimeMillis() - this.tempsPrec; // ajout du delta entre temps actuel et
-                                                                             // temps précédent
-            this.tempsPrec = System.currentTimeMillis(); // mettre a jour le temps actuel
+        long currTime = System.currentTimeMillis();
+
+        if(this.tempsPrec != -1){
+            this.tempsEcoule += currTime - this.tempsPrec; // ajout du delta entre temps actuel et temps précédent
+            this.tempsPrec = currTime; // mettre a jour le temps actuel
 
             this.chrono.setTime(tempsEcoule);
         }
         else{
-            this.tempsPrec = System.currentTimeMillis();
+            this.tempsPrec = currTime;
         }
 
     }
@@ -58,6 +59,7 @@ public class ControleurChronometre implements EventHandler<ActionEvent> {
      * Remet la durée à 0
      */
     public void reset(){
-        this.chrono.resetTime();
+        this.tempsPrec = -1;
+        this.tempsEcoule = 0;
     }
 }

@@ -17,7 +17,8 @@ public class ControleurNiveau implements EventHandler<ActionEvent> {
      * @param modelePendu modèle du jeu
      */
     public ControleurNiveau(MotMystere modelePendu) {
-        // A implémenter
+        this.modelePendu = modelePendu;
+
     }
 
     /**
@@ -26,9 +27,28 @@ public class ControleurNiveau implements EventHandler<ActionEvent> {
      */
     @Override
     public void handle(ActionEvent actionEvent) {
-        // A implémenter
+        
         RadioButton radiobouton = (RadioButton) actionEvent.getTarget();
         String nomDuRadiobouton = radiobouton.getText();
+
+        switch (nomDuRadiobouton) {
+            case "Facile" -> {
+                this.modelePendu.setNiveau(MotMystere.FACILE);
+            }
+            case "Médium" -> {
+                this.modelePendu.setNiveau(MotMystere.MOYEN);
+            }
+            case "Difficile" -> {
+                this.modelePendu.setNiveau(MotMystere.DIFFICILE);
+            }
+            case "Expert" -> {
+                this.modelePendu.setNiveau(MotMystere.EXPERT);
+            }
+            
+            default -> {
+                this.modelePendu.setNiveau(MotMystere.FACILE);
+            }
+        }
         System.out.println(nomDuRadiobouton);
     }
 }
