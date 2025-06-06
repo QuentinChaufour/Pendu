@@ -1,8 +1,6 @@
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
 
 import java.util.Optional;
 
@@ -19,16 +17,14 @@ public class ControleurLancerPartie implements EventHandler<ActionEvent> {
      **/
     private Pendu vuePendu;
 
-    private ToggleGroup radioNiveau;
 
     /**
      * @param modelePendu modèle du jeu
      * @param p vue du jeu
      */
-    public ControleurLancerPartie(MotMystere modelePendu, Pendu vuePendu,ToggleGroup radioNiveau) {
+    public ControleurLancerPartie(MotMystere modelePendu, Pendu vuePendu) {
         this.modelePendu = modelePendu;
         this.vuePendu = vuePendu;
-        this.radioNiveau = radioNiveau;
     }
 
     /**

@@ -1,10 +1,12 @@
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -14,6 +16,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.Node;
 
 import java.util.List;
+
 import java.util.Arrays;
 import java.io.File;
 import java.util.ArrayList;
@@ -139,7 +142,7 @@ public class Pendu extends Application {
 
         this.bJouer = new Button("Lancer une partie");
         this.bNewWord = new Button("Nouveau Mot");
-        this.bNewWord.setOnAction(new ControleurNouveauMot(this));
+        this.bNewWord.setOnAction(new ControleurLancerPartie(this.modelePendu,this));
 
         this.chrono = new Chronometre();
     }
@@ -191,9 +194,9 @@ public class Pendu extends Application {
         
         VBox timer = new VBox(this.chrono);
         this.chrono.setTextAlignment(TextAlignment.CENTER);
-        
+        timer.setAlignment(Pos.CENTER);
         timer.setStyle("fx-font-size:40px");
-        VBox.setMargin(timer, new Insets(20));
+        //HBox.setMargin(timer, new Insets(20));
         TitledPane time = new TitledPane("Chronomètre",timer);
 
         return time;
@@ -213,6 +216,7 @@ public class Pendu extends Application {
 
         BorderPane center = new BorderPane();
         VBox content = new VBox(10);
+        content.setAlignment(Pos.CENTER);
 
         BorderPane.setMargin(content, new Insets(50));
 
@@ -246,13 +250,11 @@ public class Pendu extends Application {
             }
         }
 
-        right.getChildren().addAll(this.leNiveau,time,this.bNewWord);
-
-        BorderPane.setMargin(this.bNewWord, new Insets(40, 0, 0, 0));
-
-        BorderPane.setAlignment(time, Pos.CENTER);
-        BorderPane.setAlignment(this.leNiveau, Pos.CENTER);
-        BorderPane.setAlignment(this.leNiveau, Pos.CENTER_LEFT);
+        VBox rightBox = new VBox(10);
+        HBox btnNewWordBox = new HBox(this.bNewWord);
+        rightBox.getChildren().addAll(this.leNiveau, time, btnNewWordBox); 
+        right.getChildren().addAll(rightBox);
+        rightBox.setAlignment(Pos.CENTER);
 
         center.setRight(right);
 
@@ -297,9 +299,21 @@ public class Pendu extends Application {
         TitledPane difficuly = new TitledPane("Niveau de difficulté",radio);
         difficuly.setCollapsible(false);
 
-        this.bJouer.setOnAction(new ControleurLancerPartie(modelePendu, this,groupRadioDiff));
+        this.bJouer.setOnAction(new ControleurLancerPartie(modelePendu,this));
         content.getChildren().addAll(this.bJouer,difficuly);
         paramJeu.setCenter(content);
+
+        Button demineur = new Button("Démineur");
+        demineur.setOnAction((ActionEvent) -> {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setHeaderText("Le jeu du démineur n'est pas encore implémenté\nComing soon !");
+            alert.setGraphic(new ImageView(new Image(new File("pendu_pour_etu/img/demineur.png").toURI().toString())));
+            alert.showAndWait();
+        });
+
+        BorderPane.setAlignment(demineur, Pos.CENTER);
+        paramJeu.setBottom(demineur);
+
 
         return paramJeu;
     }
@@ -337,15 +351,15 @@ public class Pendu extends Application {
         this.chrono.resetTime();
         this.changerMot();
         this.modeJeu();
+        this.majAffichage();
         this.chrono.start();
     }
 
     /**
      * raffraichit l'affichage selon les données du modèle
-     * this.appliPendu.getChrono().stop();
-     * this.appliPendu.modeAccueil();
      */
     public void majAffichage(){
+        
         this.motCrypte.setText(this.modelePendu.getMotCrypte());
         this.dessin.setImage(this.lesImages.get(this.modelePendu.getNbErreursMax() - this.modelePendu.getNbErreursRestants()));
 
@@ -367,8 +381,11 @@ public class Pendu extends Application {
     }
         
     public Alert popUpReglesDuJeu(){
-        // A implementer
+        
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setResizable(true);
+        alert.setHeaderText("Voici les règles du pendu");
+        alert.setContentText("Vous devez tenter de dévoiler le mot caché, vous n'avez le droit qu'a " + this.modelePendu.getNbErreursMax() + " erreurs au maximum avant de perdre, vous avez aussi une limite de temps affiché dans le chronomètre a droite du jeu \n Bonne chance !");
         return alert;
     }
     
@@ -422,7 +439,9 @@ public class Pendu extends Application {
      * Programme principal
      * @param args inutilisé
      */
+
     public static void main(String[] args) {
         launch(args);
+    
     }    
 }
