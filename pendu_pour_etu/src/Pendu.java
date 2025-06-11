@@ -91,12 +91,20 @@ public class Pendu extends Application {
 
     private boolean enCours;
 
+    private int longMin;
+    private int longMax;
+    private int nbErreurMax;
+
     /**
      * initialise les attributs (créer le modèle, charge les images, crée le chrono ...)
      */
     @Override
     public void init() {
-        this.modelePendu = new MotMystere("/usr/share/dict/french", 3, 10, MotMystere.FACILE, 10);
+        this.longMin = 3;
+        this.longMax = 10;
+        this.nbErreurMax = 10;
+
+        this.modelePendu = new MotMystere("/usr/share/dict/french", this.longMin, this.longMax, MotMystere.FACILE, this.nbErreurMax);
         this.lesImages = new ArrayList<Image>();
         this.chargerImages("./pendu_pour_etu/img");
         this.enCours = false;
@@ -334,20 +342,21 @@ public class Pendu extends Application {
         }
     }
 
+    /**
+     * permet d'afficher l'accueil
+     */
     public void modeAccueil(){
         this.panelCentral = (BorderPane) this.fenetreAccueil();
         this.stage.setScene(this.laScene());
     }
     
+    /**
+     * permet de passer en mode jeu de pendu
+     */
     public void modeJeu(){
         
         this.panelCentral = (BorderPane) this.fenetreJeu();
         this.stage.setScene(this.laScene());
-
-    }
-    
-    public void modeParametres(){
-
     }
 
     /** lance une partie */
@@ -407,14 +416,24 @@ public class Pendu extends Application {
         return alert;
     }
 
+    /**
+     * permet de savor si un partie est en cours
+     * @return : si la partie est en cours ou non
+     */
     public boolean enCours(){
         return this.enCours;
     }
 
+    /**
+     * permet de passer en état de jeu et inversement
+     */
     public void switchGameState(){
         this.enCours = !this.enCours;
     }
 
+    /**
+     * permet de chanher le mot a chercher
+     */
     public void changerMot(){
         this.modelePendu.setMotATrouver();
         this.motCrypte.setText(this.modelePendu.getMotCrypte());
