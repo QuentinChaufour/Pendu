@@ -13,6 +13,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.control.Tooltip;
 import javafx.scene.Node;
 
 import java.util.List;
@@ -125,6 +126,7 @@ public class Pendu extends Application {
         home.setFitWidth(32);
         this.boutonMaison.setGraphic(home);
         this.boutonMaison.setOnAction(new ControleurHome(this));
+        this.boutonMaison.setTooltip(new Tooltip("Home"));
 
         this.boutonParametres = new Button();
         ImageView param = new ImageView(new Image("file:pendu_pour_etu/img/parametres.png"));
@@ -132,6 +134,7 @@ public class Pendu extends Application {
         param.setFitWidth(32);
         this.boutonParametres.setGraphic(param);
         this.boutonParametres.setOnAction(new ControleurGame(this));
+        this.boutonParametres.setTooltip(new Tooltip("Jeux"));
 
         this.boutonInfo = new Button();
         ImageView info = new ImageView(new Image("file:pendu_pour_etu/img/info.png"));
@@ -139,6 +142,7 @@ public class Pendu extends Application {
         info.setFitWidth(32);
         this.boutonInfo.setGraphic(info);
         this.boutonInfo.setOnAction(new ControleurInfos(this));
+        this.boutonInfo.setTooltip(new Tooltip("Règle du jeu"));
 
         this.bJouer = new Button("Lancer une partie");
         this.bNewWord = new Button("Nouveau Mot");
