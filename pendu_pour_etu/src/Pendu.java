@@ -432,6 +432,16 @@ public class Pendu extends Application {
     }
 
     /**
+     * désactive tout les boutons
+     */
+    public void deactivateBtn(){
+        for (Node btn : this.clavier.getChildren()) {
+            Button tmp = (Button) btn;
+            tmp.setDisable(true);
+        }
+    }
+
+    /**
      * permet de chanher le mot a chercher
      */
     public void changerMot(){

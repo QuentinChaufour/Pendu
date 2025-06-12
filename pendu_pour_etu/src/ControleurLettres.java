@@ -42,12 +42,18 @@ public class ControleurLettres implements EventHandler<ActionEvent> {
         this.vuePendu.majAffichage();  
 
         if(this.modelePendu.gagne()){
+            this.vuePendu.getChrono().stop();
             this.vuePendu.popUpMessageGagne().showAndWait();
+            this.vuePendu.switchGameState();
             this.vuePendu.modeAccueil();
+            this.vuePendu.deactivateBtn();
         }
         if(this.modelePendu.perdu()){
+            this.vuePendu.getChrono().stop();
             this.vuePendu.popUpMessagePerdu().showAndWait();
             this.vuePendu.modeAccueil();
+            this.vuePendu.switchGameState();
+            this.vuePendu.deactivateBtn();
         }
     }
 }

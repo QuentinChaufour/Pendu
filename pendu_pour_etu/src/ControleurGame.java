@@ -2,7 +2,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 /**
- * Contrôleur à activer lorsque l'on clique sur le bouton info
+ * Contrôleur à activer lorsque l'on clique sur le bouton param
  */
 public class ControleurGame implements EventHandler<ActionEvent> {
 
@@ -16,7 +16,7 @@ public class ControleurGame implements EventHandler<ActionEvent> {
     }
 
     /**
-     * L'action consiste à afficher une fenêtre popup précisant les règles du jeu.
+     * L'action consiste à afficher la fenêtre du jeu
      * 
      * @param actionEvent l'événement action
      */
